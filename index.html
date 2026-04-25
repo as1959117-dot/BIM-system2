@@ -249,6 +249,45 @@ table.dt tr.total td { background:var(--blue)!important; color:#fff!important; f
       <p style="font-size:9px; color:#666; margin-top:8px; text-align:center;">Beam B145 - Elevation, cross-sections, and reinforcement layout (400 × 1100 mm, L = 12.82 m)</p>
     </div>
 
+        <!-- REINFORCEMENT STEEL AREA CALCULATIONS -->
+    <h2>Reinforcement Steel Area Summary</h2>
+    <div class="body">
+      <table class="dt" style="font-size:11px;">
+        <thead>
+          <tr>
+            <th>Reinforcement</th>
+            <th>Bars/Legs</th>
+            <th>Diameter</th>
+            <th>Steel Area (As)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Top Bars (Support)</strong></td>
+            <td>8</td>
+            <td>Φ25</td>
+            <td class="ok"><strong>3,926.99 mm²</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Bottom Bars (Support)</strong></td>
+            <td>12</td>
+            <td>Φ25</td>
+            <td class="ok"><strong>5,890.49 mm²</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Stirrups</strong></td>
+            <td>4 legs</td>
+            <td>Φ10</td>
+            <td class="ok"><strong>314.16 mm²</strong></td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:9px; color:#666; margin-top:8px; font-style:italic;">
+        Steel area calculations per formula: As = n × (π × d²) / 4<br>
+        All bars: B500C Grade Steel (fyk = 500 MPa)
+      </p>
+    </div>
+
     <h2>04 — Element Data Register</h2>
     <table class="dt">
       <thead><tr><th style="width:40%">Parameter</th><th style="width:30%">Value</th><th>Source</th></tr></thead>
