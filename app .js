@@ -1,5 +1,5 @@
 /* ============================================================
-   app-github.js — Static Version 2 (75% Progress - No Firebase)
+   app-github.js — Static Version (No Firebase)
    BIM Construction Tracking System
    Works on GitHub Pages with hardcoded data
    ============================================================ */
@@ -8,12 +8,12 @@
 const params = new URLSearchParams(window.location.search);
 const elementId = params.get("id") || "B145";
 
-// ── SAMPLE DATA (Version 2 - 75% Progress) ────────────────────
+// ── SAMPLE DATA (Version 1 - 0% Progress) ────────────────────
 const elementsData = {
   B145: {
     elementId:"B145", elementType:"RC Beam", companyName:"Group 1 — BIM and Digital Construction",
     projectName:"Lakeside Arts: Pavilion Expansion", docRef:"LAP-BIM-STR-B145-DS-001",
-    revision:"P1", issueStatus:"Issued for Construction", issueDate:"25 Apr 2026",
+    revision:"P0", issueStatus:"For Review", issueDate:"15 Mar 2026",
     preparedBy:"Group 1", designStandard:"EN 1992-1-1 (EC2) — EN ISO 19650",
     gridRef:"C/4 - C/6, Level 01", level:"Level 01 (+4.200 m)", span:"12.8228 m",
     orientation:"East to West", concreteGrade:"C35/45", fck:"35.00 MPa",
@@ -24,17 +24,17 @@ const elementsData = {
     hangerBars:"4 phi10", stirrupsSupport:"4 legs phi10 @ 125 mm",
     stirrupsSpan:"4 legs phi10 @ 300 mm", deflectionActual:"20 mm",
     deflectionAllow:"51 mm", deflectionRatio:"0.39 - PASS",
-    constructionStatus:"In Progress - Curing", currentActivity:"Concrete curing under polythene sheeting — awaiting strength tests",
-    progressPercent:"75", lastUpdated:"22 Apr 2026, 16:00", updatedBy:"Site Engineer - Group 1",
-    slumpTest:"80 mm (S3 class) — Pass", cube7day:"Awaiting lab confirmation", cube28day:"Pending (due 20 May 2026)",
-    testLab:"UKAS-accredited laboratory, Nottingham (awaiting 28-day results)",
-    cubeSamples:"4 cubes taken during pour", qaApprovalStatus:"Pending 28-day cube result",
+    constructionStatus:"Not Started", currentActivity:"Design approved — awaiting site mobilization",
+    progressPercent:"0", lastUpdated:"15 Mar 2026, 08:00", updatedBy:"BIM Manager - Group 1",
+    slumpTest:"Not yet tested", cube7day:"Not yet tested", cube28day:"Not yet tested",
+    testLab:"UKAS-accredited laboratory, Nottingham (awaiting samples)",
+    cubeSamples:"Not yet taken", qaApprovalStatus:"Awaiting construction commencement",
     revitElementId:"Beam - 145 (LAP-STR-L01)", bimFile:"Expansion after editing (Recovered).RTD",
-    modelSyncStatus:"Up to date", lastSynced:"22 Apr 2026, 16:00",
+    modelSyncStatus:"Up to date", lastSynced:"15 Mar 2026, 08:00",
     structuralSoftware:"Robot Structural Analysis 2026",
     costTotal:"4,864.76", costNote:"BCIS East Midlands Q1 2026. Excludes prelims, OH and P.",
-    carbonDesignTotal:"4,775.88", carbonActualTotal:"4,470.69",
-    carbonComparison:"Carbon reduction of 305.19 kgCO2e (6.4% below design). Lower-carbon concrete mix + recycled steel content.",
+    carbonDesignTotal:"4,775.88", carbonActualTotal:"0.00",
+    carbonComparison:"Design estimate completed. Actual carbon will be tracked during construction from material delivery tickets and mill certificates.",
     costItems:[
       {desc:"Ready-Mix Concrete C35/45 — Tarmac, Nottingham", qty:"5.99", unit:"m3", supply:"118.00/m3", labour:"38.00/m3", total:"933.44"},
       {desc:"Steel Reinforcement B500C — A. Steadman and Son", qty:"1,206.99", unit:"kg", supply:"0.95/kg", labour:"0.48/kg", total:"1,726.00"},
@@ -48,38 +48,25 @@ const elementsData = {
       {material:"Formwork (plywood)", qty:"35.66", unit:"m2", factor:"14.5 kgCO2e/m2", total:"517.07"},
     ],
     carbonActual:[
-      {material:"Concrete C35/45", qty:"5.99", unit:"m3", factor:"295 kgCO2e/m3", total:"1,767.05"},
-      {material:"Steel B500C (rebar)", qty:"1,206.99", unit:"kg", factor:"1.85 kgCO2e/kg", total:"2,232.93"},
-      {material:"Formwork (plywood)", qty:"35.66", unit:"m2", factor:"13.2 kgCO2e/m2", total:"470.71"},
+      {material:"Concrete C35/45", qty:"0.00", unit:"m3", factor:"295 kgCO2e/m3", total:"0.00"},
+      {material:"Steel B500C (rebar)", qty:"0.00", unit:"kg", factor:"1.85 kgCO2e/kg", total:"0.00"},
+      {material:"Formwork (plywood)", qty:"0.00", unit:"m2", factor:"13.2 kgCO2e/m2", total:"0.00"},
     ],
     phases:[
-      {num:"01", phase:"Substructure and Setting Out", description:"Grid lines C/4 to C/6 to be confirmed against datum.", standard:"BS 5606", approvedBy:"Site Engineer", date:"18 Mar 2026", status:"Approved"},
-      {num:"02", phase:"Formwork Design and Erection", description:"Formwork to be designed for full hydrostatic pressure.", standard:"BS EN 13670", approvedBy:"Temp. Works Eng.", date:"28 Mar 2026", status:"Approved"},
-      {num:"03", phase:"Rebar Delivery and Inspection", description:"B500C steel to be delivered with mill certificates.", standard:"BS 4449:2005", approvedBy:"Structural Eng.", date:"01 Apr 2026", status:"Approved"},
-      {num:"04", phase:"Reinforcement Fixing", description:"All bars and stirrups to be placed per IFC drawings.", standard:"EN 1992-1-1", approvedBy:"Site Eng. + Foreman", date:"08 Apr 2026", status:"Approved"},
-      {num:"05", phase:"Pre-Pour Inspection", description:"Full inspection required before concrete pour.", standard:"BS EN 13670", approvedBy:"Lead Struct. Eng.", date:"10 Apr 2026", status:"Approved"},
-      {num:"06", phase:"Concrete Supply and Pour", description:"C35/45 to be placed. Slump test required.", standard:"BS EN 206", approvedBy:"Site Engineer", date:"22 Apr 2026", status:"Approved"},
-      {num:"07", phase:"Concrete Testing and QA", description:"4 cube samples to UKAS lab. Awaiting 28-day result.", standard:"BS EN 12390", approvedBy:"—", date:"—", status:"Pending"},
-      {num:"08", phase:"Curing", description:"Polythene sheeting to be applied. Min 7 days required.", standard:"BS EN 13670 S8", approvedBy:"—", date:"—", status:"Pending"},
-      {num:"09", phase:"Formwork Striking", description:"Props to remain until 25 MPa confirmed.", standard:"EN 1992-1-1 S7.4", approvedBy:"—", date:"—", status:"Pending"},
-      {num:"10", phase:"Final Inspection and Handover", description:"As-built to be checked against BIM. Revit model to be updated.", standard:"ISO 19650", approvedBy:"—", date:"—", status:"Pending"},
+      {num:"01", phase:"Substructure and Setting Out", description:"Grid lines C/4 to C/6 to be confirmed against datum.", standard:"BS 5606", approvedBy:"—", date:"Not started", status:"Pending"},
+      {num:"02", phase:"Formwork Design and Erection", description:"Formwork to be designed for full hydrostatic pressure.", standard:"BS EN 13670", approvedBy:"—", date:"Not started", status:"Pending"},
+      {num:"03", phase:"Rebar Delivery and Inspection", description:"B500C steel to be delivered with mill certificates.", standard:"BS 4449:2005", approvedBy:"—", date:"Not started", status:"Pending"},
+      {num:"04", phase:"Reinforcement Fixing", description:"All bars and stirrups to be placed per IFC drawings.", standard:"EN 1992-1-1", approvedBy:"—", date:"Not started", status:"Pending"},
+      {num:"05", phase:"Pre-Pour Inspection", description:"Full inspection required before concrete pour.", standard:"BS EN 13670", approvedBy:"—", date:"Not started", status:"Pending"},
+      {num:"06", phase:"Concrete Supply and Pour", description:"C35/45 to be placed. Slump test required.", standard:"BS EN 206", approvedBy:"—", date:"Not started", status:"Pending"},
+      {num:"07", phase:"Concrete Testing and QA", description:"4 cube samples to UKAS lab. Awaiting 28-day result.", standard:"BS EN 12390", approvedBy:"—", date:"Not started", status:"Pending"},
+      {num:"08", phase:"Curing", description:"Polythene sheeting to be applied. Min 7 days required.", standard:"BS EN 13670 S8", approvedBy:"—", date:"Not started", status:"Pending"},
+      {num:"09", phase:"Formwork Striking", description:"Props to remain until 25 MPa confirmed.", standard:"EN 1992-1-1 S7.4", approvedBy:"—", date:"Not started", status:"Pending"},
+      {num:"10", phase:"Final Inspection and Handover", description:"As-built to be checked against BIM. Revit model to be updated.", standard:"ISO 19650", approvedBy:"—", date:"Not started", status:"Pending"},
     ],
-    constructionLog:[
-      {date:"18 Mar 2026", activity:"Setting Out Complete", description:"Grid lines C/4 to C/6 confirmed against datum. Levels checked to +4.200m.", recordedBy:"Site Engineer", status:"Complete"},
-      {date:"28 Mar 2026", activity:"Formwork Erected", description:"Formwork panels erected and props checked. All levels verified.", recordedBy:"Temp Works Eng.", status:"Complete"},
-      {date:"05 Apr 2026", activity:"Rebar Fixing", description:"Bottom 8 phi25 bars positioned. Top bars fixed. 138 phi10 stirrups installed.", recordedBy:"Steel Fixer", status:"Complete"},
-      {date:"10 Apr 2026", activity:"Pre-Pour Inspection", description:"Final rebar cage inspection completed. Concrete cover verified. Green light for pour.", recordedBy:"Site Engineer", status:"Complete"},
-      {date:"22 Apr 2026", activity:"Concrete Pour", description:"5.99m3 C35/45 placed. Slump test passed at 80mm. 4 cube samples taken.", recordedBy:"Site Engineer", status:"Complete"},
-      {date:"22 Apr 2026", activity:"Curing Commenced", description:"Polythene sheeting applied. Curing commenced under controlled conditions.", recordedBy:"Site Foreman", status:"Complete"},
-    ],
-    deliveries:[
-      {material:"Formwork Panels", supplier:"Alsford Timber, East Midlands", batchId:"ALF-FW-0326-09", quantity:"35.66 m2", date:"24 Mar 2026", status:"Delivered and erected"},
-      {material:"Steel Reinforcement B500C", supplier:"A. Steadman and Son, Nottingham", batchId:"ASS-PHI25-0322", quantity:"1,206.99 kg", date:"29 Mar 2026", status:"Delivered"},
-      {material:"Ready-Mix Concrete C35/45", supplier:"Tarmac Ready-Mix, Nottingham", batchId:"TRM-2604-B14", quantity:"5.99 m3", date:"22 Apr 2026", status:"Delivered and placed"},
-    ],
-    issues:[
-      {id:"ISS-001", title:"Concrete cover below minimum at bottom bars", identified:"10 Apr 2026", description:"Cover measured at 28mm vs 30mm minimum. One spacer had shifted.", action:"Additional spacer installed. Re-inspected and approved.", standard:"EN 1992-1-1 S4.4.1", status:"Resolved"},
-    ],
+    constructionLog:[],
+    deliveries:[],
+    issues:[],
   },
   C12: {
     elementId:"C12", elementType:"RC Column", companyName:"Group 1 — BIM and Digital Construction",
@@ -139,20 +126,24 @@ window.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
+  // Get data for this element
   const data = elementsData[elementId];
   if (!data) {
     showError(`Element "${elementId}" not found. Try B145, C12, or S05.`);
     return;
   }
 
+  // Generate QR code for this page URL
   generateQR(data);
+
+  // Display the data
   populatePage(data);
   hideLoading();
 });
 
 // ── GENERATE QR CODE WITH DYNAMIC PROGRESS ────────────────────
 function generateQR(data) {
-  const qrEl = document.getElementById("qr-canvas");
+  const qrEl = document.getElementById("qr-img");
   if (!qrEl) return;
 
   const base = window.location.href.split("?")[0];
@@ -166,7 +157,7 @@ function generateQR(data) {
   container.style.cssText = "text-align:center;";
 
   const img = document.createElement("img");
-  img.src = "https://api.qrserver.com/v1/create-qr-code/?size=120x120&ecc=H&data=" + encodeURIComponent(url);
+  img.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsAQMAAABDsxw2AAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAACKElEQVRoge2ZUXLDIBBD92YcDY7GUXKTLSvtEscmM5l+C6eY1C8/qoToxOy30R1j9PVal61pWnOPCYsYL2EPbEC9wFLE+EUgMRpuTdgB617KOtbQdLYJeWcoLew7VtqGLVv6UdgvmEHfpfKEG+FMYd+xHefUePAp9sFT6oUBcy871hVRrotPhT2wGoFjJ8SKzUtxP4awK5DCwp7LoMhzmLI+8BJ2xxKoPHf2LjxpOK5wJeyO+ZvCy9gcYcu9egl7YINBBu8A6UarY956CXtiV4YfYoxj4m02YSfMuQMW6RVmzMLOmKUXiXNKpAokbCnsgY19LO50KGvXtsLWhD0wVC2PK8jvejtZGus5RpvCDth25ajyTTdamhO4sBtmewsc6dAo3NoKG+6Ms7D/YG+JsVXCxPk8/gq+XSzsA4OmGXx6OQ27S2YKO2Jol+67neHEjP3VvcIuWGfDDLPUOP77QD233dJN2AGrRIfIWGWSoe7FlcI+sLTjePfIfAtb50FhB2zAjyl0j29jKW6ealzYCQOEyrXsEhYHpS1fCntgbBBom9ac8GKeWMgJe2AwZlkyVqmqo3xZv8LuWA2eWnIbzNqlNU3YAUOS0R74iVA3aAqWu+Dl21hhhY0tLrl1zAtF6U0jbcKeGOMMmRHrnjHOOIfEL2FfsdQ2Zsjr2SKxFvYdg6KDPq26zTwLO2EZ52yPWGLro7jNb9ugsFt91OijlS+9UGH/xX4bf5z2Q3enjvVCAAAAAElFTkSuQmCC";
   img.alt = "QR Code — " + (elementId || "element") + " — " + progress + "% complete";
   img.style.cssText = "width:120px;height:120px;display:block;border:2px solid #1a3a6b;padding:4px;background:#fff;margin:0 auto;";
 
@@ -197,6 +188,7 @@ function populatePage(d) {
     if (el) el.textContent = val || "—";
   };
 
+  // Header
   document.title = `${d.elementId || elementId} — ${d.projectName || "BIM Data Sheet"}`;
   set("hdr-company",   d.companyName   || "—");
   set("hdr-project",   d.projectName   || "—");
@@ -207,11 +199,13 @@ function populatePage(d) {
   set("title-sub",     `${d.projectName || ""} — ${d.designStandard || "EN 1992-1-1 (EC2)"}`);
   set("title-date",    `Prepared by: ${d.preparedBy || "—"} — Date: ${d.issueDate || "—"}`);
 
+  // Meta row
   set("meta-project",  d.projectName   || "—");
   set("meta-id",       d.elementId     || elementId);
   set("meta-grid",     d.gridRef       || "—");
   set("meta-span",     d.span          || "—");
 
+  // Live status
   set("ls-status",     d.constructionStatus  || "—");
   set("ls-activity",   d.currentActivity     || "—");
   set("ls-updated",    d.lastUpdated         || "—");
@@ -232,6 +226,7 @@ function populatePage(d) {
     else                                                   lsStatusEl.classList.add("pending");
   }
 
+  // Technical data
   set("td-concrete",    d.concreteGrade    || "—");
   set("td-fck",         d.fck              || "—");
   set("td-steel",       d.steelGrade       || "—");
@@ -254,6 +249,7 @@ function populatePage(d) {
   set("td-defl-allow",  d.deflectionAllow  || "—");
   set("td-defl-ratio",  d.deflectionRatio  || "—");
 
+  // QA
   set("qa-slump",       d.slumpTest        || "—");
   set("qa-7day",        d.cube7day         || "—");
   set("qa-28day",       d.cube28day        || "—");
@@ -261,12 +257,10 @@ function populatePage(d) {
   set("qa-samples",     d.cubeSamples      || "—");
   set("qa-status",      d.qaApprovalStatus || "—");
 
+  // Cost table
   buildCostTable(d);
   buildCarbonTables(d);
   buildPhaseTable(d.phases || []);
-  buildLogTable(d.constructionLog || []);
-  buildDeliveryTable(d.deliveries || []);
-  buildIssueList(d.issues || []);
 }
 
 function buildCostTable(d) {
@@ -346,72 +340,7 @@ function buildPhaseTable(phases) {
   }).join("");
 }
 
-function buildLogTable(log) {
-  const tbody = document.getElementById("log-tbody");
-  if (!tbody) return;
-  if (!log.length) {
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#888;font-style:italic;">No log entries recorded yet.</td></tr>`;
-    return;
-  }
-  tbody.innerHTML = log.map(r => {
-    const cls = r.status === "Complete" ? "val-ok" : "val-blue";
-    return `<tr>
-      <td>${r.date}</td>
-      <td><b>${r.activity}</b></td>
-      <td>${r.description}</td>
-      <td>${r.recordedBy}</td>
-      <td class="${cls}">${r.status}</td>
-    </tr>`;
-  }).join("");
-}
-
-function buildDeliveryTable(deliveries) {
-  const tbody = document.getElementById("delivery-tbody");
-  if (!tbody) return;
-  if (!deliveries.length) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#888;font-style:italic;">No delivery records found.</td></tr>`;
-    return;
-  }
-  tbody.innerHTML = deliveries.map(r => {
-    const cls = r.status && r.status.includes("Delivered") ? "val-ok" : "val-warn";
-    return `<tr>
-      <td><b>${r.material}</b></td>
-      <td>${r.supplier}</td>
-      <td class="val-mono">${r.batchId}</td>
-      <td>${r.quantity}</td>
-      <td>${r.date}</td>
-      <td class="${cls}">${r.status}</td>
-    </tr>`;
-  }).join("");
-}
-
-function buildIssueList(issues) {
-  const wrap = document.getElementById("issue-wrap");
-  if (!wrap) return;
-  if (!issues.length) {
-    wrap.innerHTML = `<p style="font-family:Arial;font-size:11.5px;color:#888;font-style:italic;">No issues recorded for this element.</p>`;
-    return;
-  }
-  wrap.innerHTML = issues.map(iss => {
-    const resolved = iss.status === "Resolved";
-    return `<div class="issue-box">
-      <div class="ib-head ${resolved ? "resolved" : ""}">
-        <div>
-          <span class="ib-id ${resolved ? "resolved" : ""}">${iss.id}</span>
-          &nbsp; ${iss.title}
-        </div>
-        <div class="ib-status ${resolved ? "ok" : "open"}">${iss.status}</div>
-      </div>
-      <div class="ib-body">
-        <b>Identified:</b> ${iss.identified}<br>
-        <b>Description:</b> ${iss.description}<br>
-        <b>Action taken:</b> ${iss.action}<br>
-        <b>Standard reference:</b> ${iss.standard}
-      </div>
-    </div>`;
-  }).join("");
-}
-
+// ── UI HELPERS ───────────────────────────────────────────────
 function hideLoading() {
   const el = document.getElementById("loading-msg");
   if (el) el.style.display = "none";
