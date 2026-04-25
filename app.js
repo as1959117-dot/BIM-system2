@@ -1,99 +1,176 @@
 /* ============================================================
-   app.js — Element Datasheet Page Logic
+   app-github.js — Static Version (No Firebase)
    BIM Construction Tracking System
-   Reads element ID from URL → fetches live data from Firebase
-   Updates the page automatically when data changes in admin
+   Works on GitHub Pages with hardcoded data
    ============================================================ */
 
-// ── FIREBASE CONFIGURATION ──────────────────────────────────
-// Paste your Firebase project config here.
-// Get it from: Firebase Console → Project Settings → Your Apps → SDK setup
-const firebaseConfig = {
-  apiKey:            "AIzaSyACk7s3iAqID4cHxsHUyJWlY6KaC3yBLaE",
-  authDomain:        "bim-beam-145.firebaseapp.com",
-  projectId:         "bim-beam-145",
-  storageBucket:     "bim-beam-145.firebasestorage.app",
-  messagingSenderId: "1080298944444",
-  appId:             "1:1080298944444:web:571ac2de49dedb74195db9"
+// ── GET ELEMENT ID FROM URL ──────────────────────────────────
+const params = new URLSearchParams(window.location.search);
+const elementId = params.get("id") || "B145";
+
+// ── SAMPLE DATA (Version 1 - 0% Progress) ────────────────────
+const elementsData = {
+  B145: {
+    elementId:"B145", elementType:"RC Beam", companyName:"Group 1 — BIM and Digital Construction",
+    projectName:"Lakeside Arts: Pavilion Expansion", docRef:"LAP-BIM-STR-B145-DS-001",
+    revision:"P0", issueStatus:"For Review", issueDate:"15 Mar 2026",
+    preparedBy:"Group 1", designStandard:"EN 1992-1-1 (EC2) — EN ISO 19650",
+    gridRef:"C/4 - C/6, Level 01", level:"Level 01 (+4.200 m)", span:"12.8228 m",
+    orientation:"East to West", concreteGrade:"C35/45", fck:"35.00 MPa",
+    steelGrade:"B500C", fyk:"500.00 MPa", width:"400 mm", depth:"1100 mm",
+    concreteVolume:"5.99 m3", steelWeight:"1,206.99 kg", steelDensity:"201.36 kg/m3",
+    formworkArea:"35.66 m2", bendingMoment:"1,470.14 kN.m", shearForce:"945.24 kN",
+    bottomBars:"8 ∅25 (As = 3928 mm2)", topBars:"12 ∅25 (As = 5892 mm2)",
+    hangerBars:"4 ∅10", stirrupsSupport:"4 legs ∅10 @ 125 mm",
+    stirrupsSpan:"4 legs ∅10 @ 300 mm", deflectionActual:"20 mm",
+    deflectionAllow:"51 mm", deflectionRatio:"0.39 - PASS",
+    constructionStatus:"Not Started", currentActivity:"Design approved — awaiting site mobilization",
+    progressPercent:"0", lastUpdated:"15 Mar 2026, 08:00", updatedBy:"BIM Manager - Group 1",
+    slumpTest:"Not yet tested", cube7day:"Not yet tested", cube28day:"Not yet tested",
+    testLab:"UKAS-accredited laboratory, Nottingham (awaiting samples)",
+    cubeSamples:"Not yet taken", qaApprovalStatus:"Awaiting construction commencement",
+    revitElementId:"Beam - 145 (LAP-STR-L01)", bimFile:"Expansion after editing (Recovered).RTD",
+    modelSyncStatus:"Up to date", lastSynced:"15 Mar 2026, 08:00",
+    structuralSoftware:"Robot Structural Analysis 2026",
+    costTotal:"4,864.76", costNote:"BCIS East Midlands Q1 2026. Excludes prelims, OH and P.",
+    carbonDesignTotal:"4,775.88", carbonActualTotal:"0.00",
+    carbonComparison:"Design estimate completed. Actual carbon will be tracked during construction from material delivery tickets and mill certificates.",
+    costItems:[
+      {desc:"Ready-Mix Concrete C35/45 — Tarmac, Nottingham", qty:"5.99", unit:"m3", supply:"118.00/m3", labour:"38.00/m3", total:"933.44"},
+      {desc:"Steel Reinforcement B500C — A. Steadman and Son", qty:"1,206.99", unit:"kg", supply:"0.95/kg", labour:"0.48/kg", total:"1,726.00"},
+      {desc:"Formwork Supply, Erect and Strike — Alsford Timber", qty:"35.66", unit:"m2", supply:"32.00/m2", labour:"19.00/m2", total:"1,818.66"},
+      {desc:"Concrete Testing and QA — UKAS lab, Nottingham", qty:"1", unit:"item", supply:"155.00", labour:"—", total:"155.00"},
+      {desc:"Site Management and Supervision — CITB levy 5%", qty:"—", unit:"%", supply:"5%", labour:"—", total:"231.66"},
+    ],
+    carbonDesign:[
+      {material:"Concrete C35/45", qty:"5.99", unit:"m3", factor:"310 kgCO2e/m3", total:"1,856.90"},
+      {material:"Steel B500C (rebar)", qty:"1,206.99", unit:"kg", factor:"1.99 kgCO2e/kg", total:"2,401.91"},
+      {material:"Formwork (plywood)", qty:"35.66", unit:"m2", factor:"14.5 kgCO2e/m2", total:"517.07"},
+    ],
+    carbonActual:[
+      {material:"Concrete C35/45", qty:"0.00", unit:"m3", factor:"295 kgCO2e/m3", total:"0.00"},
+      {material:"Steel B500C (rebar)", qty:"0.00", unit:"kg", factor:"1.85 kgCO2e/kg", total:"0.00"},
+      {material:"Formwork (plywood)", qty:"0.00", unit:"m2", factor:"13.2 kgCO2e/m2", total:"0.00"},
+    ],
+    phases:[
+      {num:"01", phase:"Substructure and Setting Out", description:"Grid lines C/4 to C/6 to be confirmed against datum.", standard:"BS 5606", approvedBy:"—", date:"Not started", status:"Pending"},
+      {num:"02", phase:"Formwork Design and Erection", description:"Formwork to be designed for full hydrostatic pressure.", standard:"BS EN 13670", approvedBy:"—", date:"Not started", status:"Pending"},
+      {num:"03", phase:"Rebar Delivery and Inspection", description:"B500C steel to be delivered with mill certificates.", standard:"BS 4449:2005", approvedBy:"—", date:"Not started", status:"Pending"},
+      {num:"04", phase:"Reinforcement Fixing", description:"All bars and stirrups to be placed per IFC drawings.", standard:"EN 1992-1-1", approvedBy:"—", date:"Not started", status:"Pending"},
+      {num:"05", phase:"Pre-Pour Inspection", description:"Full inspection required before concrete pour.", standard:"BS EN 13670", approvedBy:"—", date:"Not started", status:"Pending"},
+      {num:"06", phase:"Concrete Supply and Pour", description:"C35/45 to be placed. Slump test required.", standard:"BS EN 206", approvedBy:"—", date:"Not started", status:"Pending"},
+      {num:"07", phase:"Concrete Testing and QA", description:"4 cube samples to UKAS lab. Awaiting 28-day result.", standard:"BS EN 12390", approvedBy:"—", date:"Not started", status:"Pending"},
+      {num:"08", phase:"Curing", description:"Polythene sheeting to be applied. Min 7 days required.", standard:"BS EN 13670 S8", approvedBy:"—", date:"Not started", status:"Pending"},
+      {num:"09", phase:"Formwork Striking", description:"Props to remain until 25 MPa confirmed.", standard:"EN 1992-1-1 S7.4", approvedBy:"—", date:"Not started", status:"Pending"},
+      {num:"10", phase:"Final Inspection and Handover", description:"As-built to be checked against BIM. Revit model to be updated.", standard:"ISO 19650", approvedBy:"—", date:"Not started", status:"Pending"},
+    ],
+    constructionLog:[],
+    deliveries:[],
+    issues:[],
+  },
+  C12: {
+    elementId:"C12", elementType:"RC Column", companyName:"Group 1 — BIM and Digital Construction",
+    projectName:"Lakeside Arts: Pavilion Expansion", docRef:"LAP-BIM-STR-C12-DS-001",
+    revision:"P1", issueStatus:"Issued for Construction", issueDate:"15 Apr 2026",
+    preparedBy:"Group 1", designStandard:"EN 1992-1-1 (EC2) — EN ISO 19650",
+    gridRef:"C/4, Level 00 to Level 01", level:"Level 00 (Ground) to Level 01 (+4.200 m)",
+    span:"4.200 m (height)", orientation:"Vertical", concreteGrade:"C35/45",
+    fck:"35.00 MPa", steelGrade:"B500C", fyk:"500.00 MPa",
+    width:"400 mm", depth:"400 mm", concreteVolume:"0.67 m3",
+    steelWeight:"98.40 kg", steelDensity:"146.87 kg/m3",
+    formworkArea:"6.72 m2", bendingMoment:"—", shearForce:"—",
+    bottomBars:"8 ∅16 (longitudinal)", topBars:"8 ∅16 (longitudinal)",
+    hangerBars:"—", stirrupsSupport:"∅8 links @ 200 mm",
+    stirrupsSpan:"∅8 links @ 300 mm",
+    constructionStatus:"Completed", currentActivity:"Column cast and cured — above element under construction",
+    progressPercent:"100", lastUpdated:"10 Apr 2026, 10:30", updatedBy:"Site Engineer - Group 1",
+    slumpTest:"75 mm (S3 class) — Pass", cube7day:"27.1 MPa",
+    cube28day:"38.4 MPa — Pass", testLab:"UKAS-accredited laboratory, Nottingham",
+    cubeSamples:"4 cubes", qaApprovalStatus:"Approved — 28-day result confirmed",
+    phases:[
+      {num:"01", phase:"Setting Out", description:"Grid confirmed.", standard:"BS 5606", approvedBy:"Site Eng.", date:"18 Mar 2026", status:"Approved"},
+      {num:"02", phase:"Formwork", description:"Formwork erected.", standard:"BS EN 13670", approvedBy:"Temp Eng.", date:"25 Mar 2026", status:"Approved"},
+      {num:"03", phase:"Concrete Pour", description:"Concrete placed.", standard:"BS EN 206", approvedBy:"Site Eng.", date:"02 Apr 2026", status:"Approved"},
+      {num:"04", phase:"Curing", description:"Curing completed.", standard:"BS EN 13670", approvedBy:"Site Eng.", date:"10 Apr 2026", status:"Approved"},
+      {num:"05", phase:"Striking", description:"Formwork removed.", standard:"EN 1992-1-1", approvedBy:"Lead Eng.", date:"10 Apr 2026", status:"Approved"},
+    ],
+    constructionLog:[],
+    deliveries:[],
+    issues:[],
+  },
+  S05: {
+    elementId:"S05", elementType:"RC Slab", companyName:"Group 1 — BIM and Digital Construction",
+    projectName:"Lakeside Arts: Pavilion Expansion", docRef:"LAP-BIM-STR-S05-DS-001",
+    revision:"P0", issueStatus:"For Review", issueDate:"22 Apr 2026",
+    preparedBy:"Group 1", designStandard:"EN 1992-1-1 (EC2) — EN ISO 19650",
+    gridRef:"C/4 to C/6 — D/4 to D/6, Level 01", level:"Level 01 (+4.200 m)",
+    span:"5.50 x 4.80 m", orientation:"Horizontal", concreteGrade:"C32/40",
+    fck:"32.00 MPa", steelGrade:"B500B", fyk:"500.00 MPa",
+    constructionStatus:"Not started — awaiting beam curing completion",
+    currentActivity:"Waiting for Beam 145 and Column C12 curing sign-off",
+    progressPercent:"0", lastUpdated:"22 Apr 2026, 09:00", updatedBy:"BIM Manager - Group 1",
+    phases:[
+      {num:"01", phase:"Rebar Preparation", description:"Slab rebar to be prepared.", standard:"BS 4449", approvedBy:"—", date:"Not started", status:"Pending"},
+      {num:"02", phase:"Concrete Pour", description:"Slab concrete to be placed.", standard:"BS EN 206", approvedBy:"—", date:"Not started", status:"Pending"},
+    ],
+    constructionLog:[],
+    deliveries:[],
+    issues:[],
+  }
 };
 
-// ── FIREBASE INITIALISATION ──────────────────────────────────
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-// ── GET ELEMENT ID FROM URL ──────────────────────────────────
-// URL format: index.html?id=B145
-const params = new URLSearchParams(window.location.search);
-const elementId = params.get("id");
-
-// ── MAIN INIT ───────────────────────────────────────────────
+// ── MAIN INITIALIZATION ──────────────────────────────────────
 window.addEventListener("DOMContentLoaded", () => {
   if (!elementId) {
     showError("No element ID found in URL. Please use index.html?id=B145");
     return;
   }
 
-  // Subscribe to live Firestore updates
-  // This listener fires immediately with current data, then again on any change
-  db.collection("elements").doc(elementId)
-    .onSnapshot(
-      (doc) => {
-        if (doc.exists) {
-          const data = doc.data();
-          populatePage(data);
-          // Generate QR code AFTER data loads so we can include progress
-          generateQR(data);
-          hideLoading();
-        } else {
-          showError(`Element "${elementId}" not found in the database. Check the ID and try again.`);
-        }
-      },
-      (err) => {
-        console.error("Firestore error:", err);
-        showError("Unable to connect to the database. Check your Firebase configuration.");
-      }
-    );
+  // Get data for this element
+  const data = elementsData[elementId];
+  if (!data) {
+    showError(`Element "${elementId}" not found. Try B145, C12, or S05.`);
+    return;
+  }
+
+  // Generate QR code for this page URL
+  generateQR(data);
+
+  // Display the data
+  populatePage(data);
+  hideLoading();
 });
 
 // ── GENERATE QR CODE WITH DYNAMIC PROGRESS ────────────────────
 function generateQR(data) {
-  const qrEl = document.getElementById("qr-canvas");
+  const qrEl = document.getElementById("qr-img");
   if (!qrEl) return;
 
-  // Build the URL for THIS specific element
   const base = window.location.href.split("?")[0];
   const url  = base + "?id=" + (elementId || "B145");
-
-  // Get progress data
   const progress = parseInt(data?.progressPercent) || 0;
   const status = data?.constructionStatus || "Not Started";
 
-  // Clear any previous QR
   qrEl.innerHTML = "";
 
-  // Create container for QR code + status
   const container = document.createElement("div");
   container.style.cssText = "text-align:center;";
 
-  // Use QRServer API — always works, no library needed
   const img = document.createElement("img");
-  img.src = "https://api.qrserver.com/v1/create-qr-code/?size=120x120&ecc=H&data=" + encodeURIComponent(url);
-  img.alt = "QR Code — " + (elementId || "element") + " live record — " + progress + "% complete";
+  img.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsAQMAAABDsxw2AAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAACKElEQVRoge2ZUXLDIBBD92YcDY7GUXKTLSvtEscmM5l+C6eY1C8/qoToxOy30R1j9PVal61pWnOPCYsYL2EPbEC9wFLE+EUgMRpuTdgB617KOtbQdLYJeWcoLew7VtqGLVv6UdgvmEHfpfKEG+FMYd+xHefUePAp9sFT6oUBcy871hVRrotPhT2wGoFjJ8SKzUtxP4awK5DCwp7LoMhzmLI+8BJ2xxKoPHf2LjxpOK5wJeyO+ZvCy9gcYcu9egl7YINBBu8A6UarY956CXtiV4YfYoxj4m02YSfMuQMW6RVmzMLOmKUXiXNKpAokbCnsgY19LO50KGvXtsLWhD0wVC2PK8jvejtZGus5RpvCDth25ajyTTdamhO4sBtmewsc6dAo3NoKG+6Ms7D/YG+JsVXCxPk8/gq+XSzsA4OmGXx6OQ27S2YKO2Jol+67neHEjP3VvcIuWGfDDLPUOP77QD233dJN2AGrRIfIWGWSoe7FlcI+sLTjePfIfAtb50FhB2zAjyl0j29jKW6ealzYCQOEyrXsEhYHpS1fCntgbBBom9ac8GKeWMgJe2AwZlkyVqmqo3xZv8LuWA2eWnIbzNqlNU3YAUOS0R74iVA3aAqWu+Dl21hhhY0tLrl1zAtF6U0jbcKeGOMMmRHrnjHOOIfEL2FfsdQ2Zsjr2SKxFvYdg6KDPq26zTwLO2EZ52yPWGLro7jNb9ugsFt91OijlS+9UGH/xX4bf5z2Q3enjvVCAAAAAElFTkSuQmCC";
+  img.alt = "QR Code — " + (elementId || "element") + " — " + progress + "% complete";
   img.style.cssText = "width:120px;height:120px;display:block;border:2px solid #1a3a6b;padding:4px;background:#fff;margin:0 auto;";
 
   img.onerror = function() {
-    // Fallback if API fails — show URL text
     img.style.cssText = "display:none;";
     const fallback = document.createElement("div");
     fallback.style.cssText = "width:120px;height:120px;border:2px solid #1a3a6b;display:flex;align-items:center;justify-content:center;font-size:8px;color:#888;text-align:center;padding:4px;word-break:break-all;margin:0 auto;background:#f9f9f9;";
     fallback.textContent = url;
     container.appendChild(fallback);
-    return;
   };
 
   container.appendChild(img);
 
-  // Add dynamic status label below QR code
   const statusLabel = document.createElement("div");
   statusLabel.style.cssText = "margin-top:8px;font-family:Arial,sans-serif;font-size:11px;font-weight:bold;color:#1a3a6b;";
   statusLabel.innerHTML = `<span style="display:block;font-size:13px;">${elementId || "Element"}</span>
@@ -106,17 +183,12 @@ function generateQR(data) {
 
 // ── POPULATE PAGE WITH ELEMENT DATA ─────────────────────────
 function populatePage(d) {
-  // Helper: safely set text content
   const set = (id, val) => {
     const el = document.getElementById(id);
     if (el) el.textContent = val || "—";
   };
-  const setHTML = (id, val) => {
-    const el = document.getElementById(id);
-    if (el) el.innerHTML = val || "—";
-  };
 
-  // ── Header / title block
+  // Header
   document.title = `${d.elementId || elementId} — ${d.projectName || "BIM Data Sheet"}`;
   set("hdr-company",   d.companyName   || "—");
   set("hdr-project",   d.projectName   || "—");
@@ -127,13 +199,13 @@ function populatePage(d) {
   set("title-sub",     `${d.projectName || ""} — ${d.designStandard || "EN 1992-1-1 (EC2)"}`);
   set("title-date",    `Prepared by: ${d.preparedBy || "—"} — Date: ${d.issueDate || "—"}`);
 
-  // ── Meta row
+  // Meta row
   set("meta-project",  d.projectName   || "—");
   set("meta-id",       d.elementId     || elementId);
   set("meta-grid",     d.gridRef       || "—");
   set("meta-span",     d.span          || "—");
 
-  // ── Live status
+  // Live status
   set("ls-status",     d.constructionStatus  || "—");
   set("ls-activity",   d.currentActivity     || "—");
   set("ls-updated",    d.lastUpdated         || "—");
@@ -145,7 +217,6 @@ function populatePage(d) {
   if (progFill) progFill.style.width = progress + "%";
   if (progPct)  progPct.textContent  = `${progress}% Complete`;
 
-  // Colour code the status value
   const lsStatusEl = document.getElementById("ls-status");
   if (lsStatusEl) {
     lsStatusEl.className = "ls-val";
@@ -155,7 +226,7 @@ function populatePage(d) {
     else                                                   lsStatusEl.classList.add("pending");
   }
 
-  // ── Technical data
+  // Technical data
   set("td-concrete",    d.concreteGrade    || "—");
   set("td-fck",         d.fck              || "—");
   set("td-steel",       d.steelGrade       || "—");
@@ -177,21 +248,8 @@ function populatePage(d) {
   set("td-deflection",  d.deflectionActual || "—");
   set("td-defl-allow",  d.deflectionAllow  || "—");
   set("td-defl-ratio",  d.deflectionRatio  || "—");
-  set("td-notes",       d.structuralNotes  || "—");
 
-  // ── BIM integration
-  set("bim-revit-id",   d.revitElementId   || "—");
-  set("bim-file",       d.bimFile          || "—");
-  set("bim-sync",       d.modelSyncStatus  || "—");
-  set("bim-syncdate",   d.lastSynced       || "—");
-  set("bim-analysis",   d.structuralSoftware || "—");
-  const bimLink = document.getElementById("bim-live-link");
-  if (bimLink && d.liveUrl) {
-    bimLink.href = d.liveUrl;
-    bimLink.textContent = d.liveUrl;
-  }
-
-  // ── QA / compliance
+  // QA
   set("qa-slump",       d.slumpTest        || "—");
   set("qa-7day",        d.cube7day         || "—");
   set("qa-28day",       d.cube28day        || "—");
@@ -199,56 +257,16 @@ function populatePage(d) {
   set("qa-samples",     d.cubeSamples      || "—");
   set("qa-status",      d.qaApprovalStatus || "—");
 
-  // ── Deflection check boxes
-  set("comp-defl-val",   (d.deflectionActual || "—") + " vs " + (d.deflectionAllow || "—") + " allowable");
-  set("comp-defl-ratio", (d.deflectionRatio  || "—"));
-  set("comp-shear-val",  d.shearForce        || "—");
-  set("comp-shear-note", d.shearNote         || "Shear links provided — verify against design drawings.");
-
-  // ── Cost table
+  // Cost table
   buildCostTable(d);
-
-  // ── Carbon tables
   buildCarbonTables(d);
-
-  // ── Construction log
-  buildLogTable(d.constructionLog || []);
-
-  // ── Material deliveries
-  buildDeliveryTable(d.deliveries || []);
-
-  // ── Issues
-  buildIssueList(d.issues || []);
-
-  // ── Construction phases
   buildPhaseTable(d.phases || []);
-
-  // ── Photos
-  buildPhotoGrid(d.photos || []);
-
-  // ── Related elements
-  buildRelatedElements(d.relatedElements || []);
-
-  // ── Charts and Revit section
-  buildCharts(d);
-  buildRevitSection(d);
-
-  // ── Footer
-  set("footer-id",  d.docRef    || "—");
-  set("footer-rev", d.revision  || "—");
-  set("footer-date", d.issueDate || "—");
-  set("footer-grp",  d.preparedBy || "—");
 }
 
-// ── BUILD COST TABLE ─────────────────────────────────────────
 function buildCostTable(d) {
   const tbody = document.getElementById("cost-tbody");
   if (!tbody) return;
-  const items = d.costItems || [
-    { desc: "Ready-Mix Concrete " + (d.concreteGrade || "C35/45"), qty: d.concreteVolume || "—", unit: "m3", supply: "—", labour: "—", total: "—" },
-    { desc: "Steel Reinforcement " + (d.steelGrade || "B500C"),   qty: d.steelWeight    || "—", unit: "kg", supply: "—", labour: "—", total: "—" },
-    { desc: "Formwork — Supply, Erect and Strike",                  qty: d.formworkArea   || "—", unit: "m2", supply: "—", labour: "—", total: "—" },
-  ];
+  const items = d.costItems || [];
   tbody.innerHTML = items.map(r => `
     <tr>
       <td>${r.desc}</td>
@@ -261,13 +279,9 @@ function buildCostTable(d) {
 
   const ctEl = document.getElementById("cost-total");
   if (ctEl) ctEl.textContent = d.costTotal || "—";
-  const cnEl = document.getElementById("cost-note");
-  if (cnEl) cnEl.textContent = d.costNote || "Source: BCIS regional rates. Excludes preliminaries, overheads and profit.";
 }
 
-// ── BUILD CARBON TABLES ──────────────────────────────────────
 function buildCarbonTables(d) {
-  // Table A — Design estimate
   const tbA = document.getElementById("carbon-a-tbody");
   if (tbA) {
     const rows = d.carbonDesign || [];
@@ -283,7 +297,6 @@ function buildCarbonTables(d) {
     if (totalA) totalA.textContent = d.carbonDesignTotal || "—";
   }
 
-  // Table B — Actual
   const tbB = document.getElementById("carbon-b-tbody");
   if (tbB) {
     const rows = d.carbonActual || [];
@@ -299,81 +312,10 @@ function buildCarbonTables(d) {
     if (totalB) totalB.textContent = d.carbonActualTotal || "—";
   }
 
-  // Comparison note
   const ccEl = document.getElementById("carbon-compare");
-  if (ccEl) ccEl.textContent = d.carbonComparison || "Carbon comparison data not yet available.";
+  if (ccEl) ccEl.textContent = d.carbonComparison || "—";
 }
 
-// ── BUILD CONSTRUCTION LOG ───────────────────────────────────
-function buildLogTable(log) {
-  const tbody = document.getElementById("log-tbody");
-  if (!tbody) return;
-  if (!log.length) {
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#888;font-style:italic;">No log entries recorded yet.</td></tr>`;
-    return;
-  }
-  tbody.innerHTML = log.map(r => {
-    const cls = r.status === "Complete" ? "val-ok" : r.status === "Upcoming" ? "val-blue" : "val-warn";
-    return `<tr>
-      <td>${r.date}</td>
-      <td><b>${r.activity}</b></td>
-      <td>${r.description}</td>
-      <td>${r.recordedBy}</td>
-      <td class="${cls}">${r.status}</td>
-    </tr>`;
-  }).join("");
-}
-
-// ── BUILD DELIVERY TABLE ─────────────────────────────────────
-function buildDeliveryTable(deliveries) {
-  const tbody = document.getElementById("delivery-tbody");
-  if (!tbody) return;
-  if (!deliveries.length) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#888;font-style:italic;">No delivery records found.</td></tr>`;
-    return;
-  }
-  tbody.innerHTML = deliveries.map(r => {
-    const cls = r.status === "Delivered and placed" || r.status === "Delivered and fixed" || r.status === "Delivered and erected" ? "val-ok" : "val-warn";
-    return `<tr>
-      <td><b>${r.material}</b></td>
-      <td>${r.supplier}</td>
-      <td class="val-mono">${r.batchId}</td>
-      <td>${r.quantity}</td>
-      <td>${r.date}</td>
-      <td class="${cls}">${r.status}</td>
-    </tr>`;
-  }).join("");
-}
-
-// ── BUILD ISSUE LIST ─────────────────────────────────────────
-function buildIssueList(issues) {
-  const wrap = document.getElementById("issue-wrap");
-  if (!wrap) return;
-  if (!issues.length) {
-    wrap.innerHTML = `<p style="font-family:Arial;font-size:11.5px;color:#888;font-style:italic;">No issues recorded for this element.</p>`;
-    return;
-  }
-  wrap.innerHTML = issues.map(iss => {
-    const resolved = iss.status === "Resolved";
-    return `<div class="issue-box">
-      <div class="ib-head ${resolved ? "resolved" : ""}">
-        <div>
-          <span class="ib-id ${resolved ? "resolved" : ""}">${iss.id}</span>
-          &nbsp; ${iss.title}
-        </div>
-        <div class="ib-status ${resolved ? "ok" : "open"}">${iss.status}</div>
-      </div>
-      <div class="ib-body">
-        <b>Identified:</b> ${iss.identified}<br>
-        <b>Description:</b> ${iss.description}<br>
-        <b>Action taken:</b> ${iss.action}<br>
-        <b>Standard reference:</b> ${iss.standard}
-      </div>
-    </div>`;
-  }).join("");
-}
-
-// ── BUILD PHASE TABLE ────────────────────────────────────────
 function buildPhaseTable(phases) {
   const tbody = document.getElementById("phase-tbody");
   if (!tbody) return;
@@ -398,40 +340,6 @@ function buildPhaseTable(phases) {
   }).join("");
 }
 
-// ── BUILD PHOTO GRID ─────────────────────────────────────────
-function buildPhotoGrid(photos) {
-  const wrap = document.getElementById("photo-wrap");
-  if (!wrap) return;
-  if (!photos.length) {
-    wrap.innerHTML = `<p style="font-family:Arial;font-size:11.5px;color:#888;font-style:italic;">No site photos uploaded yet for this element.</p>`;
-    return;
-  }
-  wrap.innerHTML = `<div class="photo-grid">${
-    photos.map(p => `
-      <div class="photo-card">
-        <div class="pt">📷 ${p.stage}</div>
-        ${p.url
-          ? `<img src="${p.url}" alt="${p.stage}" />`
-          : `<div class="photo-placeholder"><div style="font-size:24px">📷</div><div>${p.stage}</div><div style="font-size:9px;color:#aaa">Photo pending</div></div>`
-        }
-        <div class="pc">${p.date} — ${p.caption}</div>
-      </div>`).join("")
-  }</div>`;
-}
-
-// ── BUILD RELATED ELEMENTS ───────────────────────────────────
-function buildRelatedElements(related) {
-  const wrap = document.getElementById("related-wrap");
-  if (!wrap) return;
-  if (!related.length) {
-    wrap.innerHTML = `<p style="font-family:Arial;font-size:11.5px;color:#888;font-style:italic;">No related elements linked.</p>`;
-    return;
-  }
-  wrap.innerHTML = related.map(r =>
-    `<a href="index.html?id=${r.id}" style="display:inline-block;margin:3px 5px 3px 0;padding:4px 10px;border:1px solid #bbb;font-family:Arial;font-size:11.5px;color:#1a3a6b;text-decoration:none;background:#eef3fc;">${r.id} — ${r.name}</a>`
-  ).join("");
-}
-
 // ── UI HELPERS ───────────────────────────────────────────────
 function hideLoading() {
   const el = document.getElementById("loading-msg");
@@ -444,374 +352,4 @@ function showError(msg) {
   const el = document.getElementById("loading-msg");
   if (el) { el.textContent = msg; el.className = "error-msg"; }
 }
-
-// ── CHARTS ───────────────────────────────────────────────────
-// Called after data loads — draws all 4 charts using Chart.js
-
-let chartProgress = null, chartCarbon = null, chartCost = null, chartTimeline = null;
-
-function buildCharts(d) {
-  buildProgressChart(d);
-  buildCarbonChart(d);
-  buildCostChart(d);
-  buildTimelineChart(d);
-}
-
-// 1. Construction Phase Progress — horizontal bar showing approved vs pending vs on hold
-function buildProgressChart(d) {
-  const ctx = document.getElementById("chart-progress");
-  if (!ctx) return;
-  if (chartProgress) chartProgress.destroy();
-
-  const phases = d.phases || [];
-  const labels = phases.map(p => p.phase && p.phase.length > 22 ? p.phase.substring(0,22)+"…" : (p.phase || "Phase"));
-  const approved = phases.map(p => p.status === "Approved" ? 1 : 0);
-  const pending  = phases.map(p => p.status === "Pending"  ? 1 : 0);
-  const onhold   = phases.map(p => p.status === "On Hold"  ? 1 : 0);
-
-  chartProgress = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels,
-      datasets: [
-        { label: "Approved",  data: approved, backgroundColor: "#1c6b35", borderWidth: 0 },
-        { label: "Pending",   data: pending,  backgroundColor: "#f59e0b", borderWidth: 0 },
-        { label: "On Hold",   data: onhold,   backgroundColor: "#8b1a1a", borderWidth: 0 },
-      ]
-    },
-    options: {
-      indexAxis: "y",
-      responsive: true,
-      plugins: {
-        legend: { position: "bottom", labels: { font: { family:"Arial", size:10 }, boxWidth:12 } },
-        tooltip: { callbacks: { label: ctx => ctx.dataset.label } }
-      },
-      scales: {
-        x: { stacked: true, max: 1, display: false },
-        y: { stacked: true, ticks: { font: { family:"Arial", size:9 } } }
-      }
-    }
-  });
-}
-
-// 2. Carbon comparison — grouped bar: Design vs Actual per material
-function buildCarbonChart(d) {
-  const ctx = document.getElementById("chart-carbon");
-  if (!ctx) return;
-  if (chartCarbon) chartCarbon.destroy();
-
-  const designRows = d.carbonDesign || [];
-  const actualRows = d.carbonActual || [];
-  const labels = designRows.map(r => r.material || "—");
-  const designVals = designRows.map(r => parseFloat((r.total||"0").replace(/,/g,"")) || 0);
-  const actualVals = actualRows.map(r => parseFloat((r.total||"0").replace(/,/g,"")) || 0);
-
-  // Add totals bar
-  const dTotal = parseFloat((d.carbonDesignTotal||"0").replace(/,/g,"")) || 0;
-  const aTotal = parseFloat((d.carbonActualTotal||"0").replace(/,/g,"")) || 0;
-  labels.push("TOTAL");
-  designVals.push(dTotal);
-  actualVals.push(aTotal);
-
-  chartCarbon = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels,
-      datasets: [
-        { label: "Design Estimate", data: designVals, backgroundColor: "#2356a8", borderWidth: 0 },
-        { label: "Actual As-Built", data: actualVals, backgroundColor: "#1c6b35", borderWidth: 0 },
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position:"bottom", labels:{ font:{family:"Arial",size:10}, boxWidth:12 } }
-      },
-      scales: {
-        x: { ticks:{ font:{family:"Arial",size:9} } },
-        y: { ticks:{ font:{family:"Arial",size:9} }, title:{ display:true, text:"kgCO2e", font:{family:"Arial",size:9} } }
-      }
-    }
-  });
-}
-
-// 3. Cost breakdown — doughnut chart
-function buildCostChart(d) {
-  const ctx = document.getElementById("chart-cost");
-  if (!ctx) return;
-  if (chartCost) chartCost.destroy();
-
-  const items = d.costItems || [];
-  if (!items.length) return;
-
-  const labels = items.map(r => r.desc && r.desc.length > 30 ? r.desc.substring(0,30)+"…" : r.desc);
-  const vals   = items.map(r => parseFloat((r.total||"0").replace(/,/g,"")) || 0);
-  const colors = ["#1a3a6b","#2356a8","#4a7fd4","#7aa8e8","#a8c8f8","#c8d8f0"];
-
-  chartCost = new Chart(ctx, {
-    type: "doughnut",
-    data: {
-      labels,
-      datasets: [{ data: vals, backgroundColor: colors, borderWidth: 1, borderColor: "#fff" }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position:"bottom", labels:{ font:{family:"Arial",size:9}, boxWidth:12 } },
-        tooltip: { callbacks: { label: ctx => `${ctx.label}: £${ctx.parsed.toLocaleString()}` } }
-      }
-    }
-  });
-}
-
-// 4. Timeline chart — horizontal bar showing phase durations
-function buildTimelineChart(d) {
-  const ctx = document.getElementById("chart-timeline");
-  if (!ctx) return;
-  if (chartTimeline) chartTimeline.destroy();
-
-  // Static timeline data for Beam 145 — update via admin if needed
-  const timelineData = d.timelineData || [
-    { phase:"Setting Out",        planned:3,  actual:3  },
-    { phase:"Formwork",           planned:5,  actual:6  },
-    { phase:"Rebar Delivery",     planned:2,  actual:2  },
-    { phase:"Reinforcement Fix",  planned:4,  actual:4  },
-    { phase:"Pre-Pour Inspection",planned:1,  actual:1  },
-    { phase:"Concrete Pour",      planned:1,  actual:1  },
-    { phase:"Curing",             planned:7,  actual:null },
-    { phase:"QA Testing",         planned:28, actual:null },
-  ];
-
-  chartTimeline = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: timelineData.map(r => r.phase),
-      datasets: [
-        { label:"Planned (days)", data: timelineData.map(r=>r.planned), backgroundColor:"#4a7fd4", borderWidth:0 },
-        { label:"Actual (days)",  data: timelineData.map(r=>r.actual||0), backgroundColor:"#1c6b35", borderWidth:0 },
-      ]
-    },
-    options: {
-      indexAxis: "y",
-      responsive: true,
-      plugins: {
-        legend: { position:"bottom", labels:{ font:{family:"Arial",size:10}, boxWidth:12 } }
-      },
-      scales: {
-        x: { ticks:{ font:{family:"Arial",size:9} }, title:{ display:true, text:"Days", font:{family:"Arial",size:9} } },
-        y: { ticks:{ font:{family:"Arial",size:9} } }
-      }
-    }
-  });
-}
-
-// ── REVIT SKETCHES / GRAPHS SECTION ─────────────────────────
-function buildRevitSection(d) {
-  const wrap = document.getElementById("revit-wrap");
-  if (!wrap) return;
-
-  // Use photos array — filter for Revit/sketch type, or show all with Revit labels
-  const photos = d.photos || [];
-  const revitPhotos = d.revitImages || [];
-
-  // Combine all available images
-  const allImages = [
-    ...revitPhotos.map(p => ({ ...p, isRevit: true })),
-    ...photos.map(p => ({ ...p, isRevit: false }))
-  ];
-
-  if (!allImages.length) {
-    // Show placeholder grid with instructions
-    wrap.innerHTML = `<div class="revit-grid">
-      ${["Revit 3D Model View — Beam 145 in Full Structure",
-         "Revit Structural Plan — Grid C/4 to C/6",
-         "Robot Structural Analysis — Bending Moment Diagram",
-         "Robot Structural Analysis — Shear Force Diagram"].map((title, i) => `
-        <div class="revit-card">
-          <div class="rt">📐 ${title}</div>
-          <div class="revit-placeholder">
-            <div style="font-size:28px">📐</div>
-            <div style="font-weight:bold;color:#1a3a6b;">${title.split("—")[0].trim()}</div>
-            <div style="font-size:9.5px;text-align:center;padding:0 10px;color:#888;">Add image URL in admin panel → Photo URLs field → Save</div>
-          </div>
-          <div class="rc">Upload via admin panel — accepts any image URL (Google Drive, Dropbox, GitHub raw, etc.)</div>
-        </div>`).join("")}
-    </div>`;
-    return;
-  }
-
-  const titles = [
-    "Revit 3D Model View",
-    "Revit Structural Plan",
-    "Robot — Bending Moment Diagram",
-    "Robot — Shear Force Diagram",
-    "Site Photograph",
-    "Structural Sketch",
-  ];
-
-  wrap.innerHTML = `<div class="revit-grid">${
-    allImages.map((img, i) => `
-      <div class="revit-card">
-        <div class="rt">📐 ${img.stage || titles[i] || "BIM View " + (i+1)}</div>
-        ${img.url
-          ? `<img src="${img.url}" alt="${img.stage || "BIM View"}" />`
-          : `<div class="revit-placeholder"><div style="font-size:24px">📐</div><div>Image pending upload</div></div>`
-        }
-        <div class="rc">${img.date || ""} ${img.caption ? "— " + img.caption : ""}</div>
-      </div>`).join("")
-  }</div>`;
-}
-
-
-// ── CHARTS FROM FIREBASE DATA ────────────────────────────────
-// All 4 charts are built from live Firestore data.
-// Update phase statuses, carbon values or cost items in admin
-// and the charts update automatically on next page load.
-
-let _chartProgress = null, _chartCarbon = null,
-    _chartTimeline = null, _chartCost = null;
-
-function buildCharts(d) {
-  _buildProgressChart(d);
-  _buildCarbonChart(d);
-  _buildTimelineChart(d);
-  _buildCostChart(d);
-}
-
-// 1. Phase progress — reads from d.phases array
-function _buildProgressChart(d) {
-  const ctx = document.getElementById("chart-progress");
-  if (!ctx) return;
-  if (_chartProgress) { _chartProgress.destroy(); }
-
-  const phases = d.phases || [];
-  const labels   = phases.map(p => p.phase ? p.phase.substring(0,22) : "Phase");
-  const approved = phases.map(p => p.status === "Approved" ? 1 : 0);
-  const pending  = phases.map(p => p.status === "Pending"  ? 1 : 0);
-  const onhold   = phases.map(p => p.status === "On Hold"  ? 1 : 0);
-
-  _chartProgress = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels,
-      datasets: [
-        { label:"Approved", data:approved, backgroundColor:"#1c6b35", borderWidth:0 },
-        { label:"Pending",  data:pending,  backgroundColor:"#f59e0b", borderWidth:0 },
-        { label:"On Hold",  data:onhold,   backgroundColor:"#8b1a1a", borderWidth:0 },
-      ]
-    },
-    options: {
-      indexAxis:"y", responsive:true, maintainAspectRatio:false,
-      plugins:{ legend:{ position:"bottom", labels:{ font:{family:"Arial",size:9}, boxWidth:10 } } },
-      scales:{
-        x:{ stacked:true, max:1, display:false },
-        y:{ stacked:true, ticks:{ font:{family:"Arial",size:8} } }
-      }
-    }
-  });
-}
-
-// 2. Carbon comparison — reads from d.carbonDesign and d.carbonActual
-function _buildCarbonChart(d) {
-  const ctx = document.getElementById("chart-carbon");
-  if (!ctx) return;
-  if (_chartCarbon) { _chartCarbon.destroy(); }
-
-  const design = d.carbonDesign || [];
-  const actual = d.carbonActual || [];
-  const labels = design.map(r => r.material || "");
-  const dVals  = design.map(r => parseFloat((r.total||"0").replace(/,/g,"")) || 0);
-  const aVals  = actual.map(r => parseFloat((r.total||"0").replace(/,/g,"")) || 0);
-
-  const dTotal = parseFloat((d.carbonDesignTotal||"0").replace(/,/g,"")) || 0;
-  const aTotal = parseFloat((d.carbonActualTotal||"0").replace(/,/g,"")) || 0;
-  labels.push("TOTAL"); dVals.push(dTotal); aVals.push(aTotal);
-
-  _chartCarbon = new Chart(ctx, {
-    type:"bar",
-    data:{
-      labels,
-      datasets:[
-        { label:"Design Estimate", data:dVals, backgroundColor:"#2356a8", borderWidth:0 },
-        { label:"Actual As-Built", data:aVals, backgroundColor:"#1c6b35", borderWidth:0 },
-      ]
-    },
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      plugins:{ legend:{ position:"bottom", labels:{ font:{family:"Arial",size:9}, boxWidth:10 } } },
-      scales:{
-        x:{ ticks:{ font:{family:"Arial",size:8} } },
-        y:{ ticks:{ font:{family:"Arial",size:8} }, title:{ display:true, text:"kgCO2e", font:{family:"Arial",size:9} } }
-      }
-    }
-  });
-}
-
-// 3. Timeline — reads from d.timelineData or falls back to phases
-function _buildTimelineChart(d) {
-  const ctx = document.getElementById("chart-timeline");
-  if (!ctx) return;
-  if (_chartTimeline) { _chartTimeline.destroy(); }
-
-  const tl = d.timelineData || [
-    { phase:"Setting Out",   planned:3,  actual:3  },
-    { phase:"Formwork",      planned:5,  actual:6  },
-    { phase:"Rebar Delivery",planned:2,  actual:2  },
-    { phase:"Rebar Fixing",  planned:4,  actual:4  },
-    { phase:"Pre-Pour",      planned:1,  actual:1  },
-    { phase:"Concrete Pour", planned:1,  actual:1  },
-    { phase:"Curing",        planned:7,  actual:0  },
-    { phase:"QA Testing",    planned:28, actual:0  },
-  ];
-
-  _chartTimeline = new Chart(ctx, {
-    type:"bar",
-    data:{
-      labels: tl.map(r=>r.phase),
-      datasets:[
-        { label:"Planned (days)", data:tl.map(r=>r.planned), backgroundColor:"#4a7fd4", borderWidth:0 },
-        { label:"Actual (days)",  data:tl.map(r=>r.actual||0), backgroundColor:"#1c6b35", borderWidth:0 },
-      ]
-    },
-    options:{
-      indexAxis:"y", responsive:true, maintainAspectRatio:false,
-      plugins:{ legend:{ position:"bottom", labels:{ font:{family:"Arial",size:9}, boxWidth:10 } } },
-      scales:{
-        x:{ ticks:{ font:{family:"Arial",size:8} }, title:{ display:true, text:"Days", font:{family:"Arial",size:9} } },
-        y:{ ticks:{ font:{family:"Arial",size:8} } }
-      }
-    }
-  });
-}
-
-// 4. Cost doughnut — reads from d.costItems
-function _buildCostChart(d) {
-  const ctx = document.getElementById("chart-cost");
-  if (!ctx) return;
-  if (_chartCost) { _chartCost.destroy(); }
-
-  const items = d.costItems || [];
-  if (!items.length) return;
-
-  const labels = items.map(r => r.desc ? r.desc.split("—")[0].substring(0,20).trim() : "Item");
-  const vals   = items.map(r => parseFloat((r.total||"0").replace(/,/g,"")) || 0);
-
-  _chartCost = new Chart(ctx, {
-    type:"doughnut",
-    data:{
-      labels,
-      datasets:[{
-        data:vals,
-        backgroundColor:["#1a3a6b","#2356a8","#4a7fd4","#7aa8e8","#a8c8f8","#c8d8f0"],
-        borderWidth:1, borderColor:"#fff"
-      }]
-    },
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      plugins:{
-        legend:{ position:"bottom", labels:{ font:{family:"Arial",size:9}, boxWidth:10 } },
-        tooltip:{ callbacks:{ label:ctx=>"£"+ctx.parsed.toLocaleString() } }
-      }
-    }
-  });
-}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
